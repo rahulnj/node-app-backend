@@ -1,8 +1,6 @@
 import express, { Request, Response } from 'express';
-import dotenv from 'dotenv';
-import connectDB from './config/database';
-
-dotenv.config();
+import connectDB from './database/database';
+import { AppConfig } from './config/appConfig';
 
 const app = express();
 
@@ -15,10 +13,11 @@ app.use('/test/1', (req: Request, res: Response) => {
 });
 
 const establishServerConnection = async () => {
+  const { PORT } = AppConfig;
   await connectDB();
 
-  app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
   });
 };
 

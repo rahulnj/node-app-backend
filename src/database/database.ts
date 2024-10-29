@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-dotenv.config();
+import { AppConfig } from '../config/appConfig';
 
+const { MONGO_URI } = AppConfig;
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI as string);
+    await mongoose.connect(MONGO_URI as string);
     console.log('Connected to database');
   } catch (error) {
     console.log(error);
