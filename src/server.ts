@@ -1,7 +1,7 @@
 import express from 'express';
-import connectDB from './database/database';
-import { AppConfig } from './config/appConfig';
-import userRouter from './routes/users';
+import connectDB from '@Db/database';
+import { AppConfig } from '@Config/appConfig';
+import userRouter from '@Routes/users';
 
 const app = express();
 
