@@ -1,5 +1,5 @@
 import express from 'express';
-import connectDB from '@Db/database';
+import connectDB from '@Db/dbConnection';
 import { AppConfig } from '@Config/appConfig';
 import userRouter from '@Routes/users';
 
