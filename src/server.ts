@@ -5,7 +5,8 @@ import logger from '@Utils/logger';
 
 import userRouter from '@Routes/users';
 
-import logRequest from '@Middlewares/loggerMiddleware';
+import { errorHandler } from '@Middlewares/errorHandler';
+import { logRequest } from '@Middlewares/loggerMiddleware';
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/users', userRouter);
+
+app.use(errorHandler);
 
 const establishServerConnection = async () => {
   const { PORT } = AppConfig;
