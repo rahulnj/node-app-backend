@@ -1,6 +1,26 @@
+/**
+ * Logging Configuration and Setup
+ *
+ * - **Development Environment** (`NODE_ENV === 'development'`):
+ *   - Logs are only output to the console.
+ *   - No file logging is enabled.
+ *
+ * - **Production Environment** (`NODE_ENV !== 'development'`):
+ *   - Logs are saved to daily rotated log files (`error.log`, `app.log`, `exceptions.log`, `rejections.log`).
+ *   - Log files are rotated daily and archived when they exceed 20MB, with a retention period of 7 days.
+ *   - All logs are compressed (`.gz`).
+ *
+ * - **Log Format**:
+ *   - Includes a timestamp, log level, and message, with colorized output for development.
+ *
+ * - **Exception and Rejection Handlers**:
+ *   - Handles uncaught exceptions and unhandled promise rejections, logging them to both console and files in production.
+ **/
+
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
+import { AppConfig } from '@Config/appConfig';
 
 const { combine, timestamp, label, printf, colorize } = format;
 
@@ -17,6 +37,8 @@ const customLogFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
 });
 
+const isDev = AppConfig.NODE_ENV === 'development';
+
 const logger = createLogger({
   level: 'info',
   format: combine(
@@ -27,29 +49,43 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    new DailyRotateFile({
-      filename: path.join(logDirectory, '%DATE%-error.log'),
-      level: 'error',
-      zippedArchive: true,
-      ...logOptions,
-    }),
-    new DailyRotateFile({
-      filename: path.join(logDirectory, '%DATE%-app.log'),
-      zippedArchive: true,
-      ...logOptions,
-    }),
+    ...(!isDev
+      ? [
+          new DailyRotateFile({
+            filename: path.join(logDirectory, '%DATE%-error.log'),
+            level: 'error',
+            zippedArchive: true,
+            ...logOptions,
+          }),
+          new DailyRotateFile({
+            filename: path.join(logDirectory, '%DATE%-app.log'),
+            zippedArchive: true,
+            ...logOptions,
+          }),
+        ]
+      : []),
   ],
   exceptionHandlers: [
-    new DailyRotateFile({
-      filename: path.join(logDirectory, '%DATE%-exceptions.log'),
-      ...logOptions,
-    }),
+    new transports.Console(),
+    ...(!isDev
+      ? [
+          new DailyRotateFile({
+            filename: path.join(logDirectory, '%DATE%-exceptions.log'),
+            ...logOptions,
+          }),
+        ]
+      : []),
   ],
   rejectionHandlers: [
-    new DailyRotateFile({
-      filename: path.join(logDirectory, '%DATE%-rejections.log'),
-      ...logOptions,
-    }),
+    new transports.Console(),
+    ...(!isDev
+      ? [
+          new DailyRotateFile({
+            filename: path.join(logDirectory, '%DATE%-rejections.log'),
+            ...logOptions,
+          }),
+        ]
+      : []),
   ],
 });
 

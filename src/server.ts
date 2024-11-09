@@ -24,7 +24,15 @@ const establishServerConnection = async () => {
   await connectDB();
 
   app.listen(PORT, () => {
-    logger.info(`Server is running on port ${PORT}`);
+    if (AppConfig.NODE_ENV === 'development') {
+      logger.info(`Server is running in development mode on port ${PORT}`);
+    } else {
+      logger.info(
+        `Server is running in ${
+          process.env.NODE_ENV || 'production'
+        } mode on port ${PORT}`
+      );
+    }
   });
 };
 
