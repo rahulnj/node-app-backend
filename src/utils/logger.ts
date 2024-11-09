@@ -1,9 +1,17 @@
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 const { combine, timestamp, label, printf, colorize } = format;
 
 const __dirname = path.resolve();
+const logDirectory = path.join(__dirname, 'logs');
+
+const logOptions = {
+  datePattern: 'YYYY-MM-DD',
+  maxSize: '20m',
+  maxFiles: '7d',
+};
 
 const customLogFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
@@ -19,22 +27,28 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    new transports.File({
-      filename: path.join(__dirname, '/logs/error.log'),
+    new DailyRotateFile({
+      filename: path.join(logDirectory, '%DATE%-error.log'),
       level: 'error',
+      zippedArchive: true,
+      ...logOptions,
     }),
-    new transports.File({
-      filename: path.join(__dirname, '/logs/app.log'),
+    new DailyRotateFile({
+      filename: path.join(logDirectory, '%DATE%-app.log'),
+      zippedArchive: true,
+      ...logOptions,
     }),
   ],
   exceptionHandlers: [
-    new transports.File({
-      filename: path.join(__dirname, '/logs/exceptions.log'),
+    new DailyRotateFile({
+      filename: path.join(logDirectory, '%DATE%-exceptions.log'),
+      ...logOptions,
     }),
   ],
   rejectionHandlers: [
-    new transports.File({
-      filename: path.join(__dirname, '/logs/rejections.log'),
+    new DailyRotateFile({
+      filename: path.join(logDirectory, '%DATE%-rejections.log'),
+      ...logOptions,
     }),
   ],
 });
