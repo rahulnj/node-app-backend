@@ -1,16 +1,12 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import connectDB from './database/database';
 import { AppConfig } from './config/appConfig';
+import userRouter from './routes/users';
 
 const app = express();
 
-app.use('/test', (req: Request, res: Response) => {
-  res.send('Hello World 1');
-});
-
-app.use('/test/1', (req: Request, res: Response) => {
-  res.send('Hello World 2');
-});
+app.use(express.json());
+app.use('/api/users', userRouter);
 
 const establishServerConnection = async () => {
   const { PORT } = AppConfig;
