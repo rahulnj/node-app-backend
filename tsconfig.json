@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@Controllers/*": ["src/controllers/*"],
-      "@Routes/*": ["src/routes/*"],
-      "@Models/*": ["src/models/*"],
-      "@Config/*": ["src/config/*"],
-      "@Db/*": ["src/db/*"],
-    },
     "target": "es6",
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@Controllers/*": ["src/controllers/*"],
+      "@Middlewares/*": ["src/middlewares/*"],
+      "@Routes/*": ["src/routes/*"],
+      "@Models/*": ["src/models/*"],
+      "@Config/*": ["src/config/*"],
+      "@Utils/*": ["src/utils/*"],
+      "@Db/*": ["src/db/*"],
+    },
   },
   "include": ["src/**/*"]
 }

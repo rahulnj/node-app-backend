@@ -1,11 +1,19 @@
 import express from 'express';
 import connectDB from '@Db/dbConnection';
 import { AppConfig } from '@Config/appConfig';
+import logger from '@Utils/logger';
+
 import userRouter from '@Routes/users';
+
+import logRequest from '@Middlewares/loggerMiddleware';
 
 const app = express();
 
+app.use(logRequest);
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/api/users', userRouter);
 
 const establishServerConnection = async () => {
@@ -13,7 +21,7 @@ const establishServerConnection = async () => {
   await connectDB();
 
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    logger.info(`Server is running on port ${PORT}`);
   });
 };
 
