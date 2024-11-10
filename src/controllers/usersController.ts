@@ -29,10 +29,8 @@ export const createUser = async (
 
   logger.info('Request started creating a new user');
 
-  const user = new User(body);
   try {
-    await user.save();
-
+    const user = await User.create(body);
     logger.info(
       `Request completed user created successfully with ID: ${user._id}`
     );
