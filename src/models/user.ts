@@ -1,7 +1,18 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
+import bcrypt from 'bcrypt';
 import isEmail from 'validator/lib/isEmail';
 
-const userSchema = new mongoose.Schema(
+interface IUser extends Document {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  age: number;
+  gender: 'male' | 'female' | 'other';
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
+
+const userSchema: Schema<IUser> = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -54,11 +65,30 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.pre('save', async function (next) {
+userSchema.pre<IUser>('save', async function (next) {
   const user = this;
+
   if (!user.isModified('password')) return next();
-  // @Todo : add hashing logic
-  next();
+
+  try {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashedPassword;
+    next();
+  } catch (err: any) {
+    next(err);
+  }
 });
 
-export const User = mongoose.model('User', userSchema);
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string
+): Promise<boolean> {
+  const user = this;
+  try {
+    const isMatch = await bcrypt.compare(candidatePassword, user.password);
+    return isMatch;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const User = mongoose.model<IUser>('User', userSchema);
