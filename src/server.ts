@@ -1,18 +1,23 @@
 import express from 'express';
-import connectDB from '@Db/dbConnection';
+import cookiesParser from 'cookie-parser';
+
 import { APP_CONFIG } from '@Config/appConfig';
+import connectDB from '@Db/dbConnection';
 import logger from '@Utils/logger';
 
 import userRouter from '@Routes/users';
 
-import { errorHandler } from '@Middlewares/errorHandler';
+import validateEnvVariables from '@Middlewares/envValidationMiddleware';
 import { logRequest } from '@Middlewares/loggerMiddleware';
+import { errorHandler } from '@Middlewares/errorHandler';
 
 const app = express();
 
+app.use(validateEnvVariables());
 app.use(logRequest);
 
 app.use(express.json());
+app.use(cookiesParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/users', userRouter);

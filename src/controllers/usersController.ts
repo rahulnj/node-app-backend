@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 import { User } from '@Models/user';
 import logger from '@Utils/logger';
+import { APP_CONFIG } from '@Config/appConfig';
 
 export const fetchUsers = async (
   req: Request,
@@ -41,24 +43,34 @@ export const userLogin = async (
   next: NextFunction
 ) => {
   const { email, password } = req.body;
-  logger.info(`Request started user login with email: ${email}`);
   try {
-    const user = await User.findOne({ email });
+    logger.info(`Login attempt for email: ${email}`);
+
+    const user = await User.findOne({ email }).exec();
     if (!user) {
-      logger.error(`User not found with email: ${email}`);
+      logger.warn(`Invalid login attempt: No user found for email ${email}`);
       res.status(404).send('Invalid credentials');
       return;
     }
 
     const isPasswordMatch = await user.comparePassword(password);
     if (!isPasswordMatch) {
-      logger.error(`Password does not match for user with email: ${email}`);
+      logger.warn(`Invalid login attempt: Incorrect password for ${email}`);
       res.status(401).send('Invalid credentials');
       return;
     }
 
-    logger.info('Request completed user login successfully');
-    res.send('Login successfull');
+    const token = jwt.sign({ _id: user._id }, APP_CONFIG.JWT_SECRET as string, {
+      expiresIn: '1h',
+    });
+
+    logger.info(`JWT token generated for user: ${email}, expires in 1 hour`);
+
+    res.cookie('authToken', token, {
+      httpOnly: true,
+      secure: APP_CONFIG.NODE_ENV === 'production',
+    });
+    res.status(200).send('Login successful');
   } catch (error) {
     next(error);
   }
