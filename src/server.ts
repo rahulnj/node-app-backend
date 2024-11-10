@@ -1,6 +1,6 @@
 import express from 'express';
 import connectDB from '@Db/dbConnection';
-import { AppConfig } from '@Config/appConfig';
+import { APP_CONFIG } from '@Config/appConfig';
 import logger from '@Utils/logger';
 
 import userRouter from '@Routes/users';
@@ -20,11 +20,11 @@ app.use('/api/users', userRouter);
 app.use(errorHandler);
 
 const establishServerConnection = async () => {
-  const { PORT } = AppConfig;
+  const { PORT } = APP_CONFIG;
   await connectDB();
 
   app.listen(PORT, () => {
-    if (AppConfig.NODE_ENV === 'development') {
+    if (APP_CONFIG.NODE_ENV === 'development') {
       logger.info(`Server is running in development mode on port ${PORT}`);
     } else {
       logger.info(

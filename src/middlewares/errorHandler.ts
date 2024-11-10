@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '@Utils/logger';
-import { AppConfig } from '@Config/appConfig';
+import { APP_CONFIG } from '@Config/appConfig';
 
 export const errorHandler = (
   err: Error,
@@ -26,7 +26,7 @@ export const errorHandler = (
     error: {
       message: errorDetails.message,
       stack:
-        AppConfig.NODE_ENV === 'development' ? errorDetails.stack : undefined,
+        APP_CONFIG.NODE_ENV === 'development' ? errorDetails.stack : undefined,
     },
   });
 };

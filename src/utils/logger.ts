@@ -20,7 +20,7 @@
 import path from 'path';
 import { createLogger, format, transports } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import { AppConfig } from '@Config/appConfig';
+import { APP_CONFIG } from '@Config/appConfig';
 
 const { combine, timestamp, label, printf, colorize } = format;
 
@@ -37,7 +37,7 @@ const customLogFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
 });
 
-const isDev = AppConfig.NODE_ENV === 'development';
+const isDev = APP_CONFIG.NODE_ENV === 'development';
 
 const logger = createLogger({
   level: 'info',

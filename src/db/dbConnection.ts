@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import { AppConfig } from '@Config/appConfig';
+import { APP_CONFIG } from '@Config/appConfig';
 import logger from '@Utils/logger';
 
-const { MONGO_URI } = AppConfig;
+const { MONGO_URI } = APP_CONFIG;
 const connectDB = async () => {
   try {
     await mongoose.connect(MONGO_URI as string);
