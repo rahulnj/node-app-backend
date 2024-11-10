@@ -60,9 +60,13 @@ export const userLogin = async (
       return;
     }
 
-    const token = jwt.sign({ _id: user._id }, APP_CONFIG.JWT_SECRET as string, {
-      expiresIn: '1h',
-    });
+    const token = await jwt.sign(
+      { _id: user._id },
+      APP_CONFIG.JWT_SECRET as string,
+      {
+        expiresIn: '1h',
+      }
+    );
 
     logger.info(`JWT token generated for user: ${email}, expires in 1 hour`);
 

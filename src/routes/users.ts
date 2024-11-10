@@ -4,10 +4,11 @@ import {
   fetchUsers,
   userLogin,
 } from '@Controllers/usersController';
+import userAuth from '@Middlewares/authMiddleware';
 
 const router = express.Router();
 
-router.get('/', fetchUsers);
+router.get('/', userAuth, fetchUsers);
 router.post('/createUser', createUser);
 router.post('/login', userLogin);
 
