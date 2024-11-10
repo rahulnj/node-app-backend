@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import isEmail from 'validator/lib/isEmail';
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,7 +23,12 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       unique: true,
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
+      validate: {
+        validator: function (value: string) {
+          return isEmail(value);
+        },
+        message: '{VALUE} is not a valid email',
+      },
     },
     password: {
       type: String,
@@ -44,7 +50,7 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Add createdAt and updatedAt timestamps
+    timestamps: true,
   }
 );
 
