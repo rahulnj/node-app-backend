@@ -11,5 +11,6 @@ interface Iuser {
   password: string;
   age: number;
   gender: 'male' | 'female' | 'other';
+  getJWT(): Promise<string>;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
