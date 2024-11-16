@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { User } from '@Models/user';
 import logger from '@Utils/logger';
 import { APP_CONFIG } from '@Config/appConfig';
@@ -60,13 +59,7 @@ export const userLogin = async (
       return;
     }
 
-    const token = await jwt.sign(
-      { _id: user._id },
-      APP_CONFIG.JWT_SECRET as string,
-      {
-        expiresIn: '1h',
-      }
-    );
+    const token = await user.getJWT();
 
     logger.info(`JWT token generated for user: ${email}, expires in 1 hour`);
 

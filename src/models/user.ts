@@ -1,6 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import isEmail from 'validator/lib/isEmail';
+import { APP_CONFIG } from '@Config/appConfig';
 
 interface IUser extends Document {
   firstName: string;
@@ -9,6 +11,7 @@ interface IUser extends Document {
   password: string;
   age: number;
   gender: 'male' | 'female' | 'other';
+  getJWT(): Promise<string>;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -78,6 +81,13 @@ userSchema.pre<IUser>('save', async function (next) {
     next(err);
   }
 });
+
+userSchema.methods.getJWT = async function () {
+  const user = this;
+  return jwt.sign({ _id: user._id }, APP_CONFIG.JWT_SECRET as string, {
+    expiresIn: '1h',
+  });
+};
 
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
