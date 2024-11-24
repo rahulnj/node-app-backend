@@ -3,7 +3,7 @@ import { User } from '@Models/user';
 import logger from '@Utils/logger';
 import { APP_CONFIG } from '@Config/appConfig';
 
-export const createUser = async (
+export const userSignup = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -21,22 +21,7 @@ export const createUser = async (
   }
 };
 
-export const fetchUsers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  logger.info('Request started fetching all users from the database');
-  try {
-    const users = await User.find();
-    logger.info(`Request completed successfully fetched ${users.length} users`);
-    res.send(users);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const userLogin = async (
+export const userSignin = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -68,23 +53,6 @@ export const userLogin = async (
       secure: APP_CONFIG.NODE_ENV === 'production',
     });
     res.status(200).send('Login successful');
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getUserProfile = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const loggedInUser = req.user;
-  logger.info(`Request started fetching user details of ${loggedInUser._id}`);
-  try {
-    logger.info(
-      `Request completed successfully fetched user details of ${loggedInUser._id}`
-    );
-    res.send(loggedInUser);
   } catch (error) {
     next(error);
   }

@@ -37,7 +37,7 @@ const customLogFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
 });
 
-const isDev = APP_CONFIG.NODE_ENV === 'development';
+const isDevMode = APP_CONFIG.NODE_ENV === 'development';
 
 const logger = createLogger({
   level: 'info',
@@ -49,7 +49,7 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    ...(!isDev
+    ...(!isDevMode
       ? [
           new DailyRotateFile({
             filename: path.join(logDirectory, '%DATE%-error.log'),
@@ -67,7 +67,7 @@ const logger = createLogger({
   ],
   exceptionHandlers: [
     new transports.Console(),
-    ...(!isDev
+    ...(!isDevMode
       ? [
           new DailyRotateFile({
             filename: path.join(logDirectory, '%DATE%-exceptions.log'),
@@ -78,7 +78,7 @@ const logger = createLogger({
   ],
   rejectionHandlers: [
     new transports.Console(),
-    ...(!isDev
+    ...(!isDevMode
       ? [
           new DailyRotateFile({
             filename: path.join(logDirectory, '%DATE%-rejections.log'),
