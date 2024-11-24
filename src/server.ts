@@ -5,8 +5,7 @@ import { APP_CONFIG } from '@Config/appConfig';
 import connectDB from '@Db/dbConnection';
 import logger from '@Utils/logger';
 
-import authRouter from '@Routes/auth';
-import profileRouter from '@Routes/profiles';
+import apiRouter from '@Routes/index';
 
 import validateEnvVariables from '@Middlewares/envValidationMiddleware';
 import { logRequest } from '@Middlewares/loggerMiddleware';
@@ -21,8 +20,7 @@ app.use(express.json());
 app.use(cookiesParser());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/v1/users', authRouter);
-app.use('/api/v1/profiles', profileRouter);
+app.use('/api/v1', apiRouter);
 
 app.use(errorHandler);
 

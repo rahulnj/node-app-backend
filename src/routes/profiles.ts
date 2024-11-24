@@ -1,9 +1,9 @@
-import express from 'express';
+import { Router } from 'express';
 import { getProfiles } from '@Controllers/profilesController';
-import userAuth from '@Middlewares/authMiddleware';
+import verifyUserToken from '@Middlewares/verifyUserToken';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/', userAuth, getProfiles);
+router.get('/', verifyUserToken, getProfiles);
 
 export default router;

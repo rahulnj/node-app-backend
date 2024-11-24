@@ -4,7 +4,11 @@ import { APP_CONFIG } from '@Config/appConfig';
 import logger from '@Utils/logger';
 import { User } from '@Models/user';
 
-const userAuth = async (req: Request, res: Response, next: NextFunction) => {
+const verifyUserToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { authToken } = req.cookies;
 
   if (!authToken) {
@@ -35,4 +39,4 @@ const userAuth = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default userAuth;
+export default verifyUserToken;
