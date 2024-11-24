@@ -2,7 +2,7 @@ import { Connection } from '@Models/connection';
 import logger from '@Utils/logger';
 import { Request, Response, NextFunction } from 'express';
 
-export const createConnectionRequest = (
+export const createConnectionRequest = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -20,11 +20,13 @@ export const createConnectionRequest = (
       connection,
       status,
     });
-    newConnection.save();
+    await newConnection.save();
     logger.info(
       `Request completed successfully to create a connection request for user ${user} and connection ${connection}`
     );
-    res.status(201).send(newConnection);
+    res.status(201).json({
+      message: 'Connection request created successfully',
+    });
   } catch (error) {
     next(error);
   }
