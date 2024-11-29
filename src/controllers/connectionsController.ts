@@ -15,6 +15,20 @@ export const createConnectionRequest = async (
     `Request started to create a connection request for user ${user} and connection ${connection}`
   );
   try {
+    const existingConnection = await Connection.findOne({
+      user,
+      connection,
+    }).exec();
+
+    if (existingConnection) {
+      logger.info(
+        `Connection request already exists between user ${user} and connection ${connection}`
+      );
+      return res.status(400).json({
+        message: 'Connection request already exists',
+      });
+    }
+
     const newConnection = new Connection({
       user,
       connection,
