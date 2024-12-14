@@ -1,5 +1,6 @@
 import express from 'express';
 import cookiesParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
 
 import { APP_CONFIG } from '@Config/appConfig';
 import connectDB from '@Db/dbConnection';
@@ -13,6 +14,13 @@ import { errorHandler } from '@Middlewares/errorHandler';
 
 const app = express();
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+
+app.use(limiter);
 app.use(validateEnvVariables());
 app.use(logRequest);
 
