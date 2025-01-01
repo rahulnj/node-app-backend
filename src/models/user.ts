@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import isEmail from 'validator/lib/isEmail';
 import { APP_CONFIG } from '@Config/appConfig';
