@@ -41,7 +41,7 @@ app.use(notFoundHandler);
 // Error handler
 app.use(errorHandler);
 
-const establishServerConnection = async () => {
+const initializeServer = async () => {
   const { PORT } = APP_CONFIG;
 
   try {
@@ -53,7 +53,7 @@ const establishServerConnection = async () => {
       );
     });
 
-    const gracefulShutdown = () => {
+    const controlledShutdown = () => {
       logger.info('Received shutdown signal, shutting down gracefully...');
       server.close(() => {
         logger.info('Closed out remaining connections.');
@@ -69,12 +69,12 @@ const establishServerConnection = async () => {
       }, 10000);
     };
 
-    process.on('SIGTERM', gracefulShutdown);
-    process.on('SIGINT', gracefulShutdown);
+    process.on('SIGTERM', controlledShutdown);
+    process.on('SIGINT', controlledShutdown);
   } catch (error) {
     logger.error('Error connecting to the database:', error);
     process.exit(1);
   }
 };
 
-establishServerConnection();
+initializeServer();
