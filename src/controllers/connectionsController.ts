@@ -6,14 +6,16 @@ export const createConnectionRequest = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const { status, id: connection } = req.params;
   const {
     user: { _id: user },
   } = req;
+
   logger.info(
     `Request started to create a connection request for user ${user} and connection ${connection}`
   );
+
   try {
     const existingConnection = await Connection.findOne({
       user,
@@ -24,9 +26,10 @@ export const createConnectionRequest = async (
       logger.info(
         `Connection request already exists between user ${user} and connection ${connection}`
       );
-      return res.status(400).json({
+      res.status(400).json({
         message: 'Connection request already exists',
       });
+      return;
     }
 
     const newConnection = new Connection({
@@ -34,7 +37,9 @@ export const createConnectionRequest = async (
       connection,
       status,
     });
+
     await newConnection.save();
+
     logger.info(
       `Request completed successfully to create a connection request for user ${user} and connection ${connection}`
     );
@@ -50,17 +55,19 @@ export const getConnections = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const {
     user: { _id: userId },
   } = req;
+
   logger.info(`Request started fetching connections for user ${userId}`);
+
   try {
-    const connections = await Connection.findById(userId).exec();
+    const connections = await Connection.find({ user: userId }).exec();
     logger.info(
       `Request completed successfully fetching connections for user ${userId}`
     );
-    res.send(connections);
+    res.status(200).json(connections);
   } catch (error) {
     next(error);
   }
