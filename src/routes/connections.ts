@@ -5,7 +5,7 @@ import { createConnectionRequest } from '@Controllers/connectionsController';
 const router = Router();
 
 router.post(
-  '/requests/send/:status/:id',
+  '/requests/send/:status/:userId',
   verifyUserToken,
   createConnectionRequest
 );

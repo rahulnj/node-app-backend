@@ -7,7 +7,7 @@ export const createConnectionRequest = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { status, id: connection } = req.params;
+  const { status, userId: connection } = req.params;
   const {
     user: { _id: user },
   } = req;
