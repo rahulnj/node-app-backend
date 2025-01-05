@@ -1,4 +1,5 @@
 import { Connection } from '@Models/connection';
+import { User } from '@Models/user';
 import logger from '@Utils/logger';
 import { Request, Response, NextFunction } from 'express';
 
@@ -23,11 +24,21 @@ export const createConnectionRequest = async (
     }).exec();
 
     if (existingConnection) {
-      logger.info(
+      logger.warn(
         `Connection request already exists between user ${user} and connection ${connection}`
       );
       res.status(400).json({
         message: 'Connection request already exists',
+      });
+      return;
+    }
+
+    const isConnectionUserExist = await User.findById(connection).exec();
+
+    if (!isConnectionUserExist) {
+      logger.warn(`Connection user not found for ID: ${connection}`);
+      res.status(404).json({
+        message: 'Connection user not found',
       });
       return;
     }
