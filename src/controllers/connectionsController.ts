@@ -70,11 +70,17 @@ export const getConnections = async (
   const {
     user: { _id: userId },
   } = req;
+  const { status } = req.params;
 
   logger.info(`Request started fetching connections for user ${userId}`);
 
   try {
-    const connections = await Connection.find({ user: userId }).exec();
+    const query: { user: string; status?: string } = { user: userId };
+    if (status) {
+      query.status = status;
+    }
+
+    const connections = await Connection.find(query).exec();
     logger.info(
       `Request completed successfully fetching connections for user ${userId}`
     );
