@@ -35,11 +35,8 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use('/api/v1', apiRouter);
 
-// 404 handler
-app.use(notFoundHandler);
-
-// Error handler
-app.use(errorHandler);
+// Error handlers
+app.use([notFoundHandler, errorHandler]);
 
 const initializeServer = async () => {
   const { PORT } = APP_CONFIG;
