@@ -7,23 +7,25 @@ export const getUsers = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userId } = req.query;
+  const { userIds } = req.query;
   const loggedInUserId = req.user._id;
 
   try {
-    if (userId) {
-      logger.info(`Request started fetching profile of user ID: ${userId}`);
+    if (userIds) {
+      const userIdArray = (userIds as string).split(',').map((id) => id.trim());
+      logger.info(`Fetching users by IDs: ${userIds}`);
+      const userProfiles = await User.find({
+        _id: { $in: userIdArray },
+      }).exec();
 
-      const userProfile = await User.findById(userId).exec();
-
-      if (!userProfile) {
-        logger.warn(`No user found for ID: ${userId}`);
+      if (!userProfiles.length) {
+        logger.warn('No users found');
         res.status(404).json({ message: 'No user found' });
         return;
       }
 
-      logger.info(`Successfully fetched profile details of user ID: ${userId}`);
-      res.status(200).json(userProfile);
+      logger.info('Successfully fetched user profiles by IDs');
+      res.status(200).json(userProfiles);
       return;
     }
 
