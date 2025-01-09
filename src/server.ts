@@ -9,7 +9,10 @@ import logger from '@Utils/logger';
 import apiRouter from '@Routes/index';
 import validateEnvVariables from '@Middlewares/envValidationMiddleware';
 import { logRequest } from '@Middlewares/loggerMiddleware';
-import { errorHandler, notFoundHandler } from '@Middlewares/errorHandler';
+import {
+  errorHandler,
+  notFoundHandler,
+} from '@Middlewares/errorHandlingMiddleware';
 
 const app = express();
 
