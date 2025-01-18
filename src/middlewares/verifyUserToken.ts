@@ -24,9 +24,8 @@ const verifyUserToken = async (
       logger.warn(
         `Access denied. No token provided. Route: ${req.method} ${req.originalUrl}`
       );
-      return res
-        .status(401)
-        .json({ message: 'Access denied. No token provided' });
+      res.status(401).json({ message: 'Access denied. No token provided' });
+      return;
     }
 
     const decoded = jwt.verify(
@@ -37,14 +36,16 @@ const verifyUserToken = async (
 
     if (!userId) {
       logger.warn(`Invalid token payload. Token: ${authToken}`);
-      return res.status(401).json({ message: 'Access denied. Invalid token' });
+      res.status(401).json({ message: 'Access denied. Invalid token' });
+      return;
     }
 
     const user = await User.findById(userId).exec();
 
     if (!user) {
       logger.warn(`No user found for token. UserID: ${userId}`);
-      return res.status(401).json({ message: 'Access denied. Invalid token' });
+      res.status(401).json({ message: 'Access denied. Invalid token' });
+      return;
     }
 
     req.user = user as Iuser;
