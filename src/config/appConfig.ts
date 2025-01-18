@@ -7,4 +7,5 @@ export const APP_CONFIG = {
   MONGO_URI: process.env.MONGO_URI,
   NODE_ENV: process.env.NODE_ENV,
   JWT_SECRET: process.env.JWT_SECRET,
+  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(','),
 };

@@ -1,11 +1,10 @@
+import { createServer, Server } from 'node:http';
 import express from 'express';
 import cookiesParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-// import cors from 'cors';
+import cors from 'cors';
 import { APP_CONFIG } from '@Config/appConfig';
-import connectDB from '@Db/dbConnection';
-import logger from '@Utils/logger';
 import apiRouter from '@Routes/index';
 import validateEnvVariables from '@Middlewares/envValidationMiddleware';
 import { logRequest } from '@Middlewares/loggerMiddleware';
@@ -41,40 +40,6 @@ app.use('/api/v1', apiRouter);
 // Error handlers
 app.use([notFoundHandler, errorHandler]);
 
-const initializeServer = async () => {
-  const { PORT } = APP_CONFIG;
+const server: Server = createServer(app);
 
-  try {
-    await connectDB();
-
-    const server = app.listen(PORT, () => {
-      logger.info(
-        `Server is running in ${APP_CONFIG.NODE_ENV} mode on port ${PORT}`
-      );
-    });
-
-    const controlledShutdown = () => {
-      logger.info('Received shutdown signal, shutting down gracefully...');
-      server.close(() => {
-        logger.info('Closed out remaining connections.');
-        process.exit(0);
-      });
-
-      // Force close server after 10 seconds
-      setTimeout(() => {
-        logger.error(
-          'Could not close connections in time, forcefully shutting down'
-        );
-        process.exit(1);
-      }, 10000);
-    };
-
-    process.on('SIGTERM', controlledShutdown);
-    process.on('SIGINT', controlledShutdown);
-  } catch (error) {
-    logger.error('Error connecting to the database:', error);
-    process.exit(1);
-  }
-};
-
-initializeServer();
+export { app, server };
