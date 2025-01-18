@@ -15,6 +15,7 @@
       "@Config/*": ["src/config/*"],
       "@Utils/*": ["src/utils/*"],
       "@Db/*": ["src/db/*"],
+      "@Socket/*": ["src/socket/*"],
     },
   },
   "include": ["src/**/*"]
