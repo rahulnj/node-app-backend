@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import verifyUserToken from '@Middlewares/verifyUserToken';
-import { validateConnectionRequest } from '@Middlewares/connection/validateConnection';
+import { verifyUserToken } from '@Middlewares/authMiddlewares/verifyUserToken';
+import { validateConnectionRequest } from '@Middlewares/connectionMiddlewares/validateConnection';
 
 import {
   createConnectionRequest,

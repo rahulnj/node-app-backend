@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-const verifyUserToken = async (
+export const verifyUserToken = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -57,5 +57,3 @@ const verifyUserToken = async (
     next(error);
   }
 };
-
-export default verifyUserToken;
