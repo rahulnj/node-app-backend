@@ -18,9 +18,12 @@ export const createConnectionRequest = async (
   );
 
   try {
+    // Checking if a connection exists in both directions (user → connection and connection → user)
     const existingConnection = await Connection.findOne({
-      user,
-      connection,
+      $or: [
+        { user, connection },
+        { user: connection, connection: user },
+      ],
     }).exec();
 
     if (existingConnection) {

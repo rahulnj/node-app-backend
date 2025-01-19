@@ -6,12 +6,12 @@ import helmet from 'helmet';
 import cors from 'cors';
 import { APP_CONFIG } from '@Config/appConfig';
 import apiRouter from '@Routes/index';
-import validateEnvVariables from '@Middlewares/envValidationMiddleware';
-import { logRequest } from '@Middlewares/loggerMiddleware';
+import validateEnvVariables from '@Middlewares/envMiddlewares/envValidation';
+import { logRequest } from '@Middlewares/loggerMiddlewares/logger';
 import {
   errorHandler,
   notFoundHandler,
-} from '@Middlewares/errorHandlingMiddleware';
+} from '@Middlewares/errorMiddlewares/errorHandlingMiddleware';
 
 const app = express();
 
