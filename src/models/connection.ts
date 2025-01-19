@@ -32,6 +32,16 @@ const connectionSchema = new mongoose.Schema<IConnection>(
   { timestamps: true }
 );
 
+connectionSchema.index({ user: 1, connection: 1 }, { unique: true });
+
+connectionSchema.pre<IConnection>('save', function (next) {
+  if (this.user.toString() === this.connection.toString()) {
+    const err = new Error('A user cannot connect with themselves');
+    return next(err);
+  }
+  next();
+});
+
 export const Connection = mongoose.model<IConnection>(
   'Connection',
   connectionSchema
