@@ -71,6 +71,13 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
 userSchema.pre<IUser>('save', async function (next) {
   const user = this;
 
+  if (user.isModified('email')) {
+    const existingUser = await User.findOne({ email: user.email });
+    if (existingUser) {
+      return next(new Error('Email already in use.'));
+    }
+  }
+
   if (!user.isModified('password')) return next();
 
   try {
@@ -84,9 +91,16 @@ userSchema.pre<IUser>('save', async function (next) {
 
 userSchema.methods.getJWT = async function () {
   const user = this;
-  return jwt.sign({ _id: user._id }, APP_CONFIG.JWT_SECRET as string, {
-    expiresIn: '1h',
-  });
+  try {
+    const token = jwt.sign(
+      { _id: user._id, email: user.email },
+      APP_CONFIG.JWT_SECRET as string,
+      { expiresIn: '1h' }
+    );
+    return token;
+  } catch (err: any) {
+    throw new Error('Error generating JWT token.');
+  }
 };
 
 userSchema.methods.comparePassword = async function (
@@ -97,7 +111,7 @@ userSchema.methods.comparePassword = async function (
     const isMatch = await bcrypt.compare(candidatePassword, user.password);
     return isMatch;
   } catch (err: any) {
-    throw new Error(err);
+    throw new Error('Password comparison failed. Please try again.');
   }
 };
 
